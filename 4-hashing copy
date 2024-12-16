@@ -1,0 +1,69 @@
+class HashTable:
+    def __init__(self):
+        self.size = 10
+        self.map = [None]*self.size
+    
+    def _get_hash(self, key):
+        return key % self.size
+    
+    def _linear_probing(self, key, index):
+        return (self._get_hash(key)+index) % self.size
+    
+    def _probing(self, key):
+        for index in range(self.size):
+            probeHash = self._linear_probing(key, index)
+            if (self.map[probeHash] is None) or (self.map[probeHash] == 'deleted'):
+                return probeHash
+
+    def add(self, key, value):
+        probeHas = self._probing(key)
+        if probeHas is not None:
+            self.map[probeHas] = [key, value]
+
+
+    def print_all(self):
+        print("==== ISI HASH TABLE ====")
+        for item in self.map:
+            if item is not None:
+                print(f"NIM: {item[0]} NAMA: {item[1]}")
+    
+    def get_data(self, key):
+        for index in range(self.size):
+            probeHas = self._linear_probing(key, index)
+            if self.map[probeHas] is None:
+                return None
+            if self.map[probeHas][0] == key:
+                return self.map[probeHas][1]
+
+    def resize(self, size):
+        old_map = self.map
+        self.size = size
+        self.map = [None] * self.size
+        for item in old_map:
+            if item is not None:
+                key, value = item
+                self.add(key, value)
+
+def main():
+    ht : HashTable = HashTable()
+    # isi hash table
+    ht.add(71210689, "Gian")
+    ht.add(71210683, "Yandi")
+    ht.add(71210699, "Andreas")
+
+    print("==== HASH TABLE SEBELUM DIRESIZE ====")
+    print()
+    ht.print_all()
+    print(f"mahasiswa dengan NIM 71210683 adalah {ht.get_data(71210683)}")
+    print()
+    # resize hash table
+    ht.resize(3)
+
+    print("==== HASH TABLE SETELAH DIRESIZE ====")
+    print()
+    ht.print_all()
+    print(f"mahasiswa dengan NIM 71210683 adalah {ht.get_data(71210683)}")
+    
+
+if __name__ == "__main__":
+    main()
